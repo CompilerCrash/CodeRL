@@ -166,3 +166,8 @@ data/APPS/train/
 !data/APPS/train/0111/
 !data/APPS/train/2404/
 !data/APPS/train/4184/
+
+# Models
+pytorch_model.bin
+models/codet5_tokenizer/
+!models/codet5_tokenizer/.gitkeep
