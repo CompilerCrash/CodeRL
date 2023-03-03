@@ -1,4 +1,3 @@
-
 """
 Reindent files.
 """
@@ -52,7 +51,7 @@ def replace_inline_tabs(content, config):
     for i in range(0, len(content)):
         char = content[i]
         if char == '\t':
-            spaces = config['tabsize']-(imagined_i % config['tabsize'])
+            spaces = config['tabsize'] - (imagined_i % config['tabsize'])
             newcontent += " " * spaces
             imagined_i += spaces
         else:
@@ -125,14 +124,14 @@ def main(args):
         "all-tabs": False
     }
     possible_args = {
-        "d":  "dry-run",
-        "h":  "help",
+        "d": "dry-run",
+        "h": "help",
         "t:": "to=",
         "f:": "from=",
-        "n":  "tabs",
+        "n": "tabs",
         "e:": "encoding=",
         "s:": "tabsize=",
-        "a":  "all-tabs",
+        "a": "all-tabs",
     }
     optlist, filenames = getopt.getopt(
         args[1:],
@@ -189,6 +188,7 @@ def main(args):
         run_files(filenames, config)
     else:
         run(sys.stdin, sys.stdout, config)
+
 
 if __name__ == "__main__":
     main(sys.argv)

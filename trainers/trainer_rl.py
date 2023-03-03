@@ -25,7 +25,6 @@ from tqdm.auto import tqdm
 
 import pdb
 
-
 # Integrations must be imported before ML frameworks:
 from transformers.integrations import (  # isort: split
     default_hp_search_backend,
@@ -123,7 +122,6 @@ from transformers.trainer_utils import (
 from transformers.training_args import ParallelMode, TrainingArguments
 from transformers.utils import logging
 
-
 _is_torch_generator_available = False
 _is_native_amp_available = False
 
@@ -171,12 +169,10 @@ if is_sagemaker_mp_enabled():
 
     from .trainer_pt_utils import smp_forward_backward, smp_forward_only, smp_gather, smp_nested_concat
 
-
 if TYPE_CHECKING:
     import optuna
 
 logger = logging.get_logger(__name__)
-
 
 # Name of the files used for checkpointing
 TRAINING_ARGS_NAME = "training_args.bin"
@@ -267,22 +263,22 @@ class Trainer_RL:
     from transformers.trainer_pt_utils import _get_learning_rate, log_metrics, metrics_format, save_metrics, save_state
 
     def __init__(
-        self,
-        model: Union[PreTrainedModel, nn.Module] = None,
-        args: TrainingArguments = None,
-        data_collator: Optional[DataCollator] = None,
-        train_dataset: Optional[Dataset] = None,
-        eval_dataset: Optional[Dataset] = None,
-        tokenizer: Optional[PreTrainedTokenizerBase] = None,
-        model_init: Callable[[], PreTrainedModel] = None,
-        compute_metrics: Optional[Callable[[EvalPrediction], Dict]] = None,
-        callbacks: Optional[List[TrainerCallback]] = None,
-        optimizers: Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LambdaLR] = (None, None),
-        tuning_mode='critic'
+            self,
+            model: Union[PreTrainedModel, nn.Module] = None,
+            args: TrainingArguments = None,
+            data_collator: Optional[DataCollator] = None,
+            train_dataset: Optional[Dataset] = None,
+            eval_dataset: Optional[Dataset] = None,
+            tokenizer: Optional[PreTrainedTokenizerBase] = None,
+            model_init: Callable[[], PreTrainedModel] = None,
+            compute_metrics: Optional[Callable[[EvalPrediction], Dict]] = None,
+            callbacks: Optional[List[TrainerCallback]] = None,
+            optimizers: Tuple[torch.optim.Optimizer, torch.optim.lr_scheduler.LambdaLR] = (None, None),
+            tuning_mode='critic'
     ):
-        
+
         print("Initialize Trainer RL....")
-        
+
         if args is None:
             output_dir = "tmp_trainer"
             logger.info(f"No `TrainingArguments` passed, using `output_dir={output_dir}`.")
@@ -359,10 +355,10 @@ class Trainer_RL:
         # 4. Sharded DDP - same as MP
         self.place_model_on_device = args.place_model_on_device
         if (
-            self.is_model_parallel
-            or args.deepspeed
-            or ((args.fp16_full_eval or args.bf16_full_eval) and not args.do_train)
-            or (self.sharded_ddp in [ShardedDDPOption.ZERO_DP_2, ShardedDDPOption.ZERO_DP_3])
+                self.is_model_parallel
+                or args.deepspeed
+                or ((args.fp16_full_eval or args.bf16_full_eval) and not args.do_train)
+                or (self.sharded_ddp in [ShardedDDPOption.ZERO_DP_2, ShardedDDPOption.ZERO_DP_3])
         ):
             self.place_model_on_device = False
 
@@ -603,8 +599,8 @@ class Trainer_RL:
                     return RandomSampler(self.train_dataset, generator=generator)
                 return RandomSampler(self.train_dataset)
             elif (
-                self.args.parallel_mode in [ParallelMode.TPU, ParallelMode.SAGEMAKER_MODEL_PARALLEL]
-                and not self.args.dataloader_drop_last
+                    self.args.parallel_mode in [ParallelMode.TPU, ParallelMode.SAGEMAKER_MODEL_PARALLEL]
+                    and not self.args.dataloader_drop_last
             ):
                 # Use a loop for TPUs when drop_last is False to have all batches have the same size.
                 return DistributedSamplerWithLoop(
@@ -884,7 +880,7 @@ class Trainer_RL:
 
         for key, value in params.items():
             if not hasattr(self.args, key):
-                logger.warn(
+                logger.warning(
                     f"Trying to set {key} in the hyperparameter search but there is no corresponding field in `TrainingArguments`."
                 )
                 continue
@@ -904,7 +900,7 @@ class Trainer_RL:
             self.args.hf_deepspeed_config = HfDeepSpeedConfig(self.args)
 
     def _report_to_hp_search(
-        self, trial: Union["optuna.Trial", Dict[str, Any]], epoch: int, metrics: Dict[str, float]
+            self, trial: Union["optuna.Trial", Dict[str, Any]], epoch: int, metrics: Dict[str, float]
     ):
         if self.hp_search_backend is None or trial is None:
             return
@@ -1021,11 +1017,11 @@ class Trainer_RL:
         return model
 
     def train(
-        self,
-        resume_from_checkpoint: Optional[Union[str, bool]] = None,
-        trial: Union["optuna.Trial", Dict[str, Any]] = None,
-        ignore_keys_for_eval: Optional[List[str]] = None,
-        **kwargs,
+            self,
+            resume_from_checkpoint: Optional[Union[str, bool]] = None,
+            trial: Union["optuna.Trial", Dict[str, Any]] = None,
+            ignore_keys_for_eval: Optional[List[str]] = None,
+            **kwargs,
     ):
         """
         Main training entry point.
@@ -1096,7 +1092,7 @@ class Trainer_RL:
                 config = PretrainedConfig.from_json_file(os.path.join(resume_from_checkpoint, CONFIG_NAME))
                 checkpoint_version = config.transformers_version
                 if checkpoint_version is not None and checkpoint_version != __version__:
-                    logger.warn(
+                    logger.warning(
                         f"You are resuming training from a checkpoint trained with {checkpoint_version} of "
                         f"Transformers but your current version is {__version__}. This is not recommended and could "
                         "yield to errors or unwanted behaviors."
@@ -1221,12 +1217,12 @@ class Trainer_RL:
 
         # Check if continuing training from a checkpoint
         if resume_from_checkpoint is not None and os.path.isfile(
-            os.path.join(resume_from_checkpoint, TRAINER_STATE_NAME)
+                os.path.join(resume_from_checkpoint, TRAINER_STATE_NAME)
         ):
             self.state = TrainerState.load_from_json(os.path.join(resume_from_checkpoint, TRAINER_STATE_NAME))
             epochs_trained = self.state.global_step // num_update_steps_per_epoch
             if not args.ignore_data_skip:
-                steps_trained_in_current_epoch = self.state.global_step % (num_update_steps_per_epoch)
+                steps_trained_in_current_epoch = self.state.global_step % num_update_steps_per_epoch
                 steps_trained_in_current_epoch *= args.gradient_accumulation_steps
             else:
                 steps_trained_in_current_epoch = 0
@@ -1268,8 +1264,8 @@ class Trainer_RL:
         tr_acc = torch.tensor(0.0).to(args.device)
         # _total_loss_scalar is updated everytime .item() has to be called on tr_loss and stores the sum of all losses
         self._total_loss_scalar = 0.0
-        self._total_rl_loss_scalar = 0.0 
-        self._total_acc_scalar = 0.0 
+        self._total_rl_loss_scalar = 0.0
+        self._total_acc_scalar = 0.0
         self._globalstep_last_logged = self.state.global_step
         model.zero_grad()
 
@@ -1322,9 +1318,9 @@ class Trainer_RL:
                     self.control = self.callback_handler.on_step_begin(args, self.state, self.control)
 
                 if (
-                    ((step + 1) % args.gradient_accumulation_steps != 0)
-                    and args.local_rank != -1
-                    and args._no_sync_in_gradient_accumulation
+                        ((step + 1) % args.gradient_accumulation_steps != 0)
+                        and args.local_rank != -1
+                        and args._no_sync_in_gradient_accumulation
                 ):
                     # Avoid unnecessary DDP synchronization since there will be no backward pass on this example.
                     with model.no_sync():
@@ -1333,26 +1329,26 @@ class Trainer_RL:
                     tr_loss_step, tr_rl_loss_step, tr_acc_step = self.training_step(model, inputs, step)
 
                 if (
-                    args.logging_nan_inf_filter
-                    and not is_torch_tpu_available()
-                    and (torch.isnan(tr_loss_step) or torch.isinf(tr_loss_step))
+                        args.logging_nan_inf_filter
+                        and not is_torch_tpu_available()
+                        and (torch.isnan(tr_loss_step) or torch.isinf(tr_loss_step))
                 ):
                     # if loss is nan or inf simply add the average of previous logged losses
                     tr_loss += tr_loss / (1 + self.state.global_step - self._globalstep_last_logged)
                 else:
                     tr_loss += tr_loss_step
-                    
+
                 if (
-                    args.logging_nan_inf_filter
-                    and not is_torch_tpu_available()
-                    and (torch.isnan(tr_rl_loss_step) or torch.isinf(tr_rl_loss_step))
+                        args.logging_nan_inf_filter
+                        and not is_torch_tpu_available()
+                        and (torch.isnan(tr_rl_loss_step) or torch.isinf(tr_rl_loss_step))
                 ):
                     # if loss is nan or inf simply add the average of previous logged losses
                     tr_rl_loss += tr_rl_loss / (1 + self.state.global_step - self._globalstep_last_logged)
                 else:
-                    tr_rl_loss += tr_rl_loss_step 
-                
-                tr_acc += tr_acc_step 
+                    tr_rl_loss += tr_rl_loss_step
+
+                tr_acc += tr_acc_step
 
                 self.current_flos += float(self.floating_point_ops(inputs))
 
@@ -1361,9 +1357,8 @@ class Trainer_RL:
                     self.deepspeed.step()
 
                 if (step + 1) % args.gradient_accumulation_steps == 0 or (
-                    # last step in epoch but step is always smaller than gradient_accumulation_steps
-                    steps_in_epoch <= args.gradient_accumulation_steps
-                    and (step + 1) == steps_in_epoch
+                        # last step in epoch but step is always smaller than gradient_accumulation_steps
+                        args.gradient_accumulation_steps >= steps_in_epoch == (step + 1)
                 ):
                     # Gradient clipping
                     if args.max_grad_norm is not None and args.max_grad_norm > 0 and not self.deepspeed:
@@ -1409,7 +1404,8 @@ class Trainer_RL:
                     self.state.epoch = epoch + (step + 1) / steps_in_epoch
                     self.control = self.callback_handler.on_step_end(args, self.state, self.control)
 
-                    self._maybe_log_save_evaluate(tr_loss, tr_rl_loss, tr_acc, model, trial, epoch, ignore_keys_for_eval)
+                    self._maybe_log_save_evaluate(tr_loss, tr_rl_loss, tr_acc, model, trial, epoch,
+                                                  ignore_keys_for_eval)
                 else:
                     self.control = self.callback_handler.on_substep_end(args, self.state, self.control)
 
@@ -1473,20 +1469,20 @@ class Trainer_RL:
                     # If the model is on the GPU, it still works!
                     self._load_state_dict_in_model(state_dict)
             else:
-                logger.warn(
+                logger.warning(
                     f"Could not locate the best model at {best_model_path}, if you are running a distributed training "
                     "on multiple nodes, you should activate `--save_on_each_node`."
                 )
 
         # add remaining tr_loss
         self._total_loss_scalar += tr_loss.item()
-        self._total_rl_loss_scalar += tr_rl_loss.item() 
-        self._total_acc_scalar += tr_acc.item() 
+        self._total_rl_loss_scalar += tr_rl_loss.item()
+        self._total_acc_scalar += tr_acc.item()
 
         train_loss = self._total_loss_scalar / self.state.global_step
         train_rl_loss = self._total_rl_loss_scalar / self.state.global_step
         train_acc = self._total_acc_scalar / self.state.global_step
-        
+
         metrics = speed_metrics("train", start_time, num_samples=num_train_samples, num_steps=self.state.max_steps)
         self.store_flos()
         metrics["total_flos"] = self.state.total_flos
@@ -1509,16 +1505,16 @@ class Trainer_RL:
 
         if len(load_result.missing_keys) != 0:
             if self.model._keys_to_ignore_on_save is not None and set(load_result.missing_keys) == set(
-                self.model._keys_to_ignore_on_save
+                    self.model._keys_to_ignore_on_save
             ):
                 self.model.tie_weights()
             else:
-                logger.warn(f"There were missing keys in the checkpoint model loaded: {load_result.missing_keys}.")
+                logger.warning(f"There were missing keys in the checkpoint model loaded: {load_result.missing_keys}.")
         if len(load_result.unexpected_keys) != 0:
-            logger.warn(f"There were unexpected keys in the checkpoint model loaded: {load_result.unexpected_keys}.")
+            logger.warning(f"There were unexpected keys in the checkpoint model loaded: {load_result.unexpected_keys}.")
 
     def _maybe_log_save_evaluate(self, tr_loss, tr_rl_loss, tr_acc, model, trial, epoch, ignore_keys_for_eval):
-        
+
         if self.control.should_log:
             logs: Dict[str, float] = {}
 
@@ -1659,9 +1655,9 @@ class Trainer_RL:
 
             operator = np.greater if self.args.greater_is_better else np.less
             if (
-                self.state.best_metric is None
-                or self.state.best_model_checkpoint is None
-                or operator(metric_value, self.state.best_metric)
+                    self.state.best_metric is None
+                    or self.state.best_model_checkpoint is None
+                    or operator(metric_value, self.state.best_metric)
             ):
                 self.state.best_metric = metric_value
                 self.state.best_model_checkpoint = output_dir
@@ -1712,7 +1708,7 @@ class Trainer_RL:
             return
 
         if os.path.isfile(os.path.join(checkpoint, OPTIMIZER_NAME)) and os.path.isfile(
-            os.path.join(checkpoint, SCHEDULER_NAME)
+                os.path.join(checkpoint, SCHEDULER_NAME)
         ):
             # Load in optimizer and scheduler states
             if is_torch_tpu_available():
@@ -1739,14 +1735,14 @@ class Trainer_RL:
                     self.scaler.load_state_dict(torch.load(os.path.join(checkpoint, SCALER_NAME)))
 
     def hyperparameter_search(
-        self,
-        hp_space: Optional[Callable[["optuna.Trial"], Dict[str, float]]] = None,
-        compute_objective: Optional[Callable[[Dict[str, float]], float]] = None,
-        n_trials: int = 20,
-        direction: str = "minimize",
-        backend: Optional[Union["str", HPSearchBackend]] = None,
-        hp_name: Optional[Callable[["optuna.Trial"], str]] = None,
-        **kwargs,
+            self,
+            hp_space: Optional[Callable[["optuna.Trial"], Dict[str, float]]] = None,
+            compute_objective: Optional[Callable[[Dict[str, float]], float]] = None,
+            n_trials: int = 20,
+            direction: str = "minimize",
+            backend: Optional[Union["str", HPSearchBackend]] = None,
+            hp_name: Optional[Callable[["optuna.Trial"], str]] = None,
+            **kwargs,
     ) -> BestRun:
         """
         Launch an hyperparameter search using `optuna` or `Ray Tune` or `SigOpt`. The optimized quantity is
@@ -1915,27 +1911,27 @@ class Trainer_RL:
             scaler = self.scaler if self.do_grad_scaling else None
             loss_mb = smp_forward_backward(model, inputs, self.args.gradient_accumulation_steps, scaler=scaler)
             return loss_mb.reduce_mean().detach().to(self.args.device)
-        
+
         acc = torch.tensor(0.0)
         rl_loss = torch.tensor(0.0)
         with self.autocast_smart_context_manager():
-            if self.tuning_mode in ['critic']: 
+            if self.tuning_mode in ['critic']:
                 loss, acc = self.compute_loss(model, inputs, step)
-            elif self.tuning_mode in ['rl']: 
+            elif self.tuning_mode in ['rl']:
                 loss, rl_loss = self.compute_loss(model, inputs, step)
-                    
+
         if self.args.n_gpu > 1:
             loss = loss.mean()  # mean() to average on multi-gpu parallel training
             rl_loss = rl_loss.mean()
-            acc = acc.mean() 
-        
+            acc = acc.mean()
+
         if self.args.gradient_accumulation_steps > 1 and not self.deepspeed:
             # deepspeed handles loss scaling by gradient_accumulation_steps in its `backward`
-            loss = loss / self.args.gradient_accumulation_steps
-            rl_loss = rl_loss / self.args.gradient_accumulation_steps
-            acc = acc / self.args.gradient_accumulation_steps
+            loss /= self.args.gradient_accumulation_steps
+            rl_loss /= self.args.gradient_accumulation_steps
+            acc /= self.args.gradient_accumulation_steps
 
-        all_loss = loss + rl_loss  #+ self.rl_loss_alpha * pos_loss 
+        all_loss = loss + rl_loss  # + self.rl_loss_alpha * pos_loss
         if self.do_grad_scaling:
             self.scaler.scale(all_loss).backward()
         elif self.use_apex:
@@ -1947,7 +1943,7 @@ class Trainer_RL:
         else:
             all_loss.backward()
 
-        return loss.detach(), rl_loss.detach(), acc.detach() 
+        return loss.detach(), rl_loss.detach(), acc.detach()
 
     def compute_loss(self, model, inputs, step, return_outputs=False):
         """
@@ -1959,25 +1955,26 @@ class Trainer_RL:
             labels = inputs.pop("labels")
         else:
             labels = None
-                            
-        if self.tuning_mode in ['critic']: 
+
+        if self.tuning_mode in ['critic']:
             outputs = None
             curr_inputs = {'input_ids': inputs['input_ids'], 'error_types': inputs['error_types'],
-                           'labels': inputs['labels']}  
+                           'labels': inputs['labels']}
             error_pred_loss, error_preds = model(**curr_inputs)
-            error_pred_acc = (inputs['error_types'].squeeze(1) == error_preds).sum()/len(inputs['error_types'])
-        
+            error_pred_acc = (inputs['error_types'].squeeze(1) == error_preds).sum() / len(inputs['error_types'])
+
         elif self.tuning_mode in ['rl']:
             outputs = None
-            rl_loss = torch.tensor(0.0) 
+            rl_loss = torch.tensor(0.0)
             if step % 2 == 0:
                 curr_inputs = {'input_ids': inputs['input_ids'], 'labels': inputs['labels']}
                 outputs = model(**curr_inputs)
             else:
-                curr_inputs = {'input_ids': inputs['rl_input_ids'], 'rewards': inputs['rl_rewards'], 'labels': inputs['rl_label_ids']}
+                curr_inputs = {'input_ids': inputs['rl_input_ids'], 'rewards': inputs['rl_rewards'],
+                               'labels': inputs['rl_label_ids']}
                 rl_loss = model(**curr_inputs)
-                    
-        if outputs is not None: 
+
+        if outputs is not None:
             # Save past state if it exists
             # TODO: this needs to be fixed and made cleaner later.
             if self.args.past_index >= 0:
@@ -1989,15 +1986,14 @@ class Trainer_RL:
                 # We don't use .loss here since the model may return tuples instead of ModelOutput.
                 loss = outputs["loss"] if isinstance(outputs, dict) else outputs[0]
         else:
-            loss = torch.tensor(0.0) 
-        
+            loss = torch.tensor(0.0)
+
         if self.tuning_mode in ['critic']:
             return error_pred_loss, error_pred_acc
-        
+
         elif self.tuning_mode in ['rl']:
-            return loss, rl_loss 
-    
-    
+            return loss, rl_loss
+
     def is_local_process_zero(self) -> bool:
         """
         Whether or not this process is the local (e.g., on one machine if training in a distributed fashion on several
@@ -2035,7 +2031,7 @@ class Trainer_RL:
             if self.args.should_save:
                 self._save(output_dir, state_dict=state_dict)
         elif (
-            ShardedDDPOption.ZERO_DP_2 in self.args.sharded_ddp or ShardedDDPOption.ZERO_DP_3 in self.args.sharded_ddp
+                ShardedDDPOption.ZERO_DP_2 in self.args.sharded_ddp or ShardedDDPOption.ZERO_DP_3 in self.args.sharded_ddp
         ):
             state_dict = self.model.state_dict()
 
@@ -2134,7 +2130,7 @@ class Trainer_RL:
             self.current_flos = 0
 
     def _sorted_checkpoints(
-        self, output_dir=None, checkpoint_prefix=PREFIX_CHECKPOINT_DIR, use_mtime=False
+            self, output_dir=None, checkpoint_prefix=PREFIX_CHECKPOINT_DIR, use_mtime=False
     ) -> List[str]:
         ordering_and_checkpoint_path = []
 
@@ -2170,9 +2166,9 @@ class Trainer_RL:
         # we don't do to allow resuming.
         save_total_limit = self.args.save_total_limit
         if (
-            self.state.best_model_checkpoint is not None
-            and self.args.save_total_limit == 1
-            and checkpoints_sorted[-1] != self.state.best_model_checkpoint
+                self.state.best_model_checkpoint is not None
+                and self.args.save_total_limit == 1
+                and checkpoints_sorted[-1] != self.state.best_model_checkpoint
         ):
             save_total_limit = 2
 
@@ -2183,10 +2179,10 @@ class Trainer_RL:
             shutil.rmtree(checkpoint)
 
     def evaluate(
-        self,
-        eval_dataset: Optional[Dataset] = None,
-        ignore_keys: Optional[List[str]] = None,
-        metric_key_prefix: str = "eval",
+            self,
+            eval_dataset: Optional[Dataset] = None,
+            ignore_keys: Optional[List[str]] = None,
+            metric_key_prefix: str = "eval",
     ) -> Dict[str, float]:
         """
         Run evaluation and returns metrics.
@@ -2252,7 +2248,7 @@ class Trainer_RL:
         return output.metrics
 
     def predict(
-        self, test_dataset: Dataset, ignore_keys: Optional[List[str]] = None, metric_key_prefix: str = "test"
+            self, test_dataset: Dataset, ignore_keys: Optional[List[str]] = None, metric_key_prefix: str = "test"
     ) -> PredictionOutput:
         """
         Run prediction and returns predictions and potential metrics.
@@ -2311,12 +2307,12 @@ class Trainer_RL:
         return PredictionOutput(predictions=output.predictions, label_ids=output.label_ids, metrics=output.metrics)
 
     def evaluation_loop(
-        self,
-        dataloader: DataLoader,
-        description: str,
-        prediction_loss_only: Optional[bool] = None,
-        ignore_keys: Optional[List[str]] = None,
-        metric_key_prefix: str = "eval",
+            self,
+            dataloader: DataLoader,
+            description: str,
+            prediction_loss_only: Optional[bool] = None,
+            ignore_keys: Optional[List[str]] = None,
+            metric_key_prefix: str = "eval",
     ) -> EvalLoopOutput:
         """
         Prediction/evaluation loop, shared by `Trainer.evaluate()` and `Trainer.predict()`.
@@ -2329,7 +2325,6 @@ class Trainer_RL:
 
         # if eval is called w/o train init deepspeed here
         if args.deepspeed and not self.deepspeed:
-
             # XXX: eval doesn't have `resume_from_checkpoint` arg but we should be able to do eval
             # from the checkpoint eventually
             deepspeed_engine, _, _ = deepspeed_init(
@@ -2530,11 +2525,11 @@ class Trainer_RL:
         return new_tensor
 
     def prediction_step(
-        self,
-        model: nn.Module,
-        inputs: Dict[str, Union[torch.Tensor, Any]],
-        prediction_loss_only: bool,
-        ignore_keys: Optional[List[str]] = None,
+            self,
+            model: nn.Module,
+            inputs: Dict[str, Union[torch.Tensor, Any]],
+            prediction_loss_only: bool,
+            ignore_keys: Optional[List[str]] = None,
     ) -> Tuple[Optional[torch.Tensor], Optional[torch.Tensor], Optional[torch.Tensor]]:
         """
         Perform an evaluation step on `model` using obj:*inputs*.
@@ -2618,13 +2613,13 @@ class Trainer_RL:
                         self._past = outputs[self.args.past_index - 1]
 
         if prediction_loss_only:
-            return (loss, None, None)
+            return loss, None, None
 
         logits = nested_detach(logits)
         if len(logits) == 1:
             logits = logits[0]
 
-        return (loss, logits, labels)
+        return loss, logits, labels
 
     def floating_point_ops(self, inputs: Dict[str, Union[torch.Tensor, Any]]):
         """
@@ -2680,8 +2675,8 @@ class Trainer_RL:
 
         # By default, ignore the checkpoint folders
         if (
-            not os.path.exists(os.path.join(self.args.output_dir, ".gitignore"))
-            and self.args.hub_strategy != HubStrategy.ALL_CHECKPOINTS
+                not os.path.exists(os.path.join(self.args.output_dir, ".gitignore"))
+                and self.args.hub_strategy != HubStrategy.ALL_CHECKPOINTS
         ):
             with open(os.path.join(self.args.output_dir, ".gitignore"), "w", encoding="utf-8") as writer:
                 writer.writelines(["checkpoint-*/"])
@@ -2689,16 +2684,16 @@ class Trainer_RL:
         self.push_in_progress = None
 
     def create_model_card(
-        self,
-        language: Optional[str] = None,
-        license: Optional[str] = None,
-        tags: Optional[str] = None,
-        model_name: Optional[str] = None,
-        finetuned_from: Optional[str] = None,
-        tasks: Optional[str] = None,
-        dataset_tags: Optional[Union[str, List[str]]] = None,
-        dataset: Optional[Union[str, List[str]]] = None,
-        dataset_args: Optional[Union[str, List[str]]] = None,
+            self,
+            language: Optional[str] = None,
+            license: Optional[str] = None,
+            tags: Optional[str] = None,
+            model_name: Optional[str] = None,
+            finetuned_from: Optional[str] = None,
+            tasks: Optional[str] = None,
+            dataset_tags: Optional[Union[str, List[str]]] = None,
+            dataset: Optional[Union[str, List[str]]] = None,
+            dataset_args: Optional[Union[str, List[str]]] = None,
     ):
         if not self.is_world_process_zero():
             return
@@ -2811,12 +2806,12 @@ class Trainer_RL:
     #
 
     def prediction_loop(
-        self,
-        dataloader: DataLoader,
-        description: str,
-        prediction_loss_only: Optional[bool] = None,
-        ignore_keys: Optional[List[str]] = None,
-        metric_key_prefix: str = "eval",
+            self,
+            dataloader: DataLoader,
+            description: str,
+            prediction_loss_only: Optional[bool] = None,
+            ignore_keys: Optional[List[str]] = None,
+            metric_key_prefix: str = "eval",
     ) -> PredictionOutput:
         """
         Prediction/evaluation loop, shared by `Trainer.evaluate()` and `Trainer.predict()`.
@@ -2831,7 +2826,6 @@ class Trainer_RL:
 
         # if eval is called w/o train init deepspeed here
         if args.deepspeed and not self.deepspeed:
-
             # XXX: eval doesn't have `resume_from_checkpoint` arg but we should be able to do eval
             # from the checkpoint eventually
             deepspeed_engine, _, _ = deepspeed_init(self, num_training_steps=0, resume_from_checkpoint=None)

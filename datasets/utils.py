@@ -13,8 +13,8 @@ import shutil
 import os
 import io
 
-
 from datasets.reindent import run as run_reindent
+
 
 def reindent_code(codestr):
     """
@@ -25,9 +25,9 @@ def reindent_code(codestr):
     ret = io.StringIO()
 
     run_reindent(
-        codestr, 
-        ret, 
-        config = {
+        codestr,
+        ret,
+        config={
             "dry-run": False,
             "help": False,
             "to": 4,
@@ -43,15 +43,14 @@ def reindent_code(codestr):
     return ret.getvalue()
 
 
-
 def get_error_type(result, binary=False):
     # binary classification critic 
     if binary:
-        if result == True:
+        if result is True:
             return 1
         else:
             return 0
-        
+
     # Compile error 
     if result == -2:
         return 0
@@ -59,14 +58,15 @@ def get_error_type(result, binary=False):
     elif result == -1:
         return 1
     # Failed unit tests 
-    elif result == False: 
-        return 2 
-    # Passed all unit tests 
-    elif result == True: 
-        return 3 
+    elif result is False:
+        return 2
+    # Passed all unit tests
+    elif result is True:
+        return 3
     else:
         raise NotImplementedError()
-            
+
+
 def get_reward_from_error_type(error_type):
     if error_type == 0:
         # Compile error
@@ -79,6 +79,6 @@ def get_reward_from_error_type(error_type):
         return -0.3
     elif error_type == 3:
         # Passed all unit tests
-        return 1 
+        return 1
     else:
         raise NotImplementedError()
