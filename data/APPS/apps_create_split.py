@@ -2,6 +2,7 @@ import json
 import os
 import pathlib
 
+
 def create_split(split="train", name="train"):
     paths = []
     roots = sorted(os.listdir(split))
@@ -9,11 +10,11 @@ def create_split(split="train", name="train"):
         root_path = os.path.join(split, folder)
         paths.append(root_path)
 
-
-    with open(name+".json", "w") as f:
+    with open(name + ".json", "w") as f:
         json.dump(paths, f)
-    
+
     return paths
+
 
 # insert path to train and test
 # path should be relative to root directory or absolute paths

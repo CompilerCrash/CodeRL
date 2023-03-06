@@ -5,7 +5,6 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 
-
 import argparse
 
 parser = argparse.ArgumentParser(description="Training a critic model for code generation")
