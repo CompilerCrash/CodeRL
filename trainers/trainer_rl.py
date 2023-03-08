@@ -210,7 +210,7 @@ class Trainer_RL:
             `model.forward()` method are automatically removed.
 
             Note that if it's a `torch.utils.data.IterableDataset` with some randomization and you are training in
-            a distributed fashion, your iterable dataset should either use a internal attribute `generator` that
+            a distributed fashion, your iterable dataset should either use an internal attribute `generator` that
             is a `torch.Generator` for the randomization that must be identical on all processes (and the Trainer
             will manually set the seed of this `generator` at each epoch) or have a `set_epoch()` method that
             internally sets the seed of the RNGs used.
@@ -226,7 +226,7 @@ class Trainer_RL:
             [`~Trainer.train`] will start from a new instance of the model as given by this function.
 
             The function may have zero argument, or a single one containing the optuna/Ray Tune/SigOpt trial object, to
-            be able to choose different architectures according to hyper parameters (such as layer count, sizes of
+            be able to choose different architectures according to hyperparameters (such as layer count, sizes of
             inner layers, dropout probabilities etc).
         compute_metrics (`Callable[[EvalPrediction], Dict]`, *optional*):
             The function that will be used to compute metrics at evaluation. Must take a
@@ -784,7 +784,7 @@ class Trainer_RL:
 
     def create_optimizer_and_scheduler(self, num_training_steps: int):
         """
-        Setup the optimizer and the learning rate scheduler.
+        Set up the optimizer and the learning rate scheduler.
 
         We provide a reasonable default that works well. If you want to use something else, you can pass a tuple in the
         Trainer's init through `optimizers`, or subclass and override this method (or `create_optimizer`
@@ -795,7 +795,7 @@ class Trainer_RL:
 
     def create_optimizer(self):
         """
-        Setup the optimizer.
+        Set up the optimizer.
 
         We provide a reasonable default that works well. If you want to use something else, you can pass a tuple in the
         Trainer's init through `optimizers`, or subclass and override this method in a subclass.
@@ -840,7 +840,7 @@ class Trainer_RL:
 
     def create_scheduler(self, num_training_steps: int, optimizer: torch.optim.Optimizer = None):
         """
-        Setup the scheduler. The optimizer of the trainer must have been set up either before this method is called or
+        Set up the scheduler. The optimizer of the trainer must have been set up either before this method is called or
         passed as an argument.
 
         Args:
@@ -1115,7 +1115,7 @@ class Trainer_RL:
                 self._move_model_to_device(self.model, args.device)
             self.model_wrapped = self.model
 
-        # Keeping track whether we can can len() on the dataset or not
+        # Keeping track whether we can len() on the dataset or not
         train_dataset_is_sized = isinstance(self.train_dataset, collections.abc.Sized)
 
         # Data loader and number of training steps
@@ -1439,7 +1439,7 @@ class Trainer_RL:
 
         logger.info("\n\nTraining completed. Do not forget to share your model on huggingface.co/models =)\n\n")
         if args.load_best_model_at_end and self.state.best_model_checkpoint is not None:
-            # Wait for everyone to get here so we are sur the model has been saved by process 0.
+            # Wait for everyone to get here so we are sure the model has been saved by process 0.
             if is_torch_tpu_available():
                 xm.rendezvous("load_best_model_at_end")
             elif args.local_rank != -1:
@@ -1673,7 +1673,7 @@ class Trainer_RL:
         }
         if torch.cuda.is_available():
             if self.args.local_rank == -1:
-                # In non distributed, we save the global CUDA RNG state (will take care of DataParallel)
+                # In non-distributed, we save the global CUDA RNG state (will take care of DataParallel)
                 rng_states["cuda"] = torch.cuda.random.get_rng_state_all()
             else:
                 rng_states["cuda"] = torch.cuda.random.get_rng_state()
@@ -1744,7 +1744,7 @@ class Trainer_RL:
             **kwargs,
     ) -> BestRun:
         """
-        Launch an hyperparameter search using `optuna` or `Ray Tune` or `SigOpt`. The optimized quantity is
+        Launch a hyperparameter search using `optuna` or `Ray Tune` or `SigOpt`. The optimized quantity is
         determined by `compute_objective`, which defaults to a function returning the evaluation loss when no
         metric is provided, the sum of all metrics otherwise.
 
@@ -2439,7 +2439,7 @@ class Trainer_RL:
         if not isinstance(eval_dataset, IterableDataset):
             num_samples = len(eval_dataset)
         # The instance check is weird and does not actually check for the type, but whether the dataset has the right
-        # methods. Therefore we need to make sure it also has the attribute.
+        # methods. Therefore, we need to make sure it also has the attribute.
         elif isinstance(eval_dataset, IterableDatasetShard) and hasattr(eval_dataset, "num_examples"):
             num_samples = eval_dataset.num_examples
         else:

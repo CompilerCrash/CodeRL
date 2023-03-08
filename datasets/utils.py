@@ -19,7 +19,7 @@ from datasets.reindent import run as run_reindent
 def reindent_code(codestr):
     """
     Given code string, reindent it in the same way that the
-    Github dataset was indented
+    GitHub dataset was indented
     """
     codestr = io.StringIO(codestr)
     ret = io.StringIO()

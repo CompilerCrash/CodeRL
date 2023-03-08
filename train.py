@@ -39,7 +39,7 @@ def run_training(args, train_data):
             clone_rl_head=args.clone_rl_head)
 
         if args.clone_rl_head:
-            # Optional: clone a seperate RL head and initialize the model weights from finetuned LM head 
+            # Optional: clone a separate RL head and initialize the model weights from finetuned LM head
             print("Initializing RL head with finetuned LM head...")
             lm_head_params = model.lm_head.weight.detach().numpy()
             model.rl_head.weight = torch.nn.Parameter(torch.tensor(lm_head_params))

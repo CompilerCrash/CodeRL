@@ -13,6 +13,6 @@ USE_TF=NO deepspeed --master_port 62000 \
   --save-freq 1000 --log-freq 10 --save_total_limit 5 \
   --fp16 \
   --tuning_mode rl --model codet5-large \
-  --model_path models/codet5_finetuned_codeRL \
+  --model_path models/codet5_finetuned_codeRL/ \
   --relative_returns \
   --deepspeed configs/deepspeed_configs.json

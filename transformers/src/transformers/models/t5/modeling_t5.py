@@ -19,11 +19,11 @@ import copy
 import math
 import os
 import warnings
-import pdb 
+import pdb
 
 import torch
 from torch import nn
-from torch.nn import CrossEntropyLoss, LogSoftmax 
+from torch.nn import CrossEntropyLoss, LogSoftmax
 from torch.utils.checkpoint import checkpoint
 
 from ...activations import ACT2FN
@@ -1461,21 +1461,21 @@ class T5ForConditionalGeneration(T5PreTrainedModel):
         self.decoder = T5Stack(decoder_config, self.shared)
 
         self.lm_head = nn.Linear(config.d_model, config.vocab_size, bias=False)
-        
-        self.tuning_mode = tuning_mode 
-        self.clone_rl_head = clone_rl_head 
-        
+
+        self.tuning_mode = tuning_mode
+        self.clone_rl_head = clone_rl_head
+
         if self.tuning_mode in ['critic']:
             self.error_head = nn.Sequential(
-                  nn.Linear(config.d_model, 128),
-                  nn.ReLU(),
-                  nn.Linear(128, 4)
+                nn.Linear(config.d_model, 128),
+                nn.ReLU(),
+                nn.Linear(128, 4),
             )
-            
-        elif self.tuning_mode in ['rl'] and self.clone_rl_head: 
-            # Optional: have a seperate linear layer for RL training (with synthetic samples) 
+
+        elif self.tuning_mode in ['rl'] and self.clone_rl_head:
+            # Optional: have a separate linear layer for RL training (with synthetic samples)
             self.rl_head = nn.Linear(config.d_model, config.vocab_size, bias=False)
-                
+
         # Initialize weights and apply final processing
         self.post_init()
 
@@ -1549,7 +1549,7 @@ class T5ForConditionalGeneration(T5PreTrainedModel):
         return_dict=None,
         error_types=None,
         rewards=None,
-        return_error_hidden_states=False
+        return_error_hidden_states=False,
     ):
         r"""
         labels (`torch.LongTensor` of shape `(batch_size,)`, *optional*):
@@ -1671,28 +1671,27 @@ class T5ForConditionalGeneration(T5PreTrainedModel):
             error_states = self.error_head(sequence_output)
             error_logits, _ = error_states.max(1)
             error_pred_loss_fct = CrossEntropyLoss()
-            error_pred_loss =  error_pred_loss_fct(error_logits.view(-1, error_logits.size(-1)), error_types.view(-1))
-            _, error_preds = torch.max(error_logits, dim=-1) 
+            error_pred_loss = error_pred_loss_fct(error_logits.view(-1, error_logits.size(-1)), error_types.view(-1))
+            _, error_preds = torch.max(error_logits, dim=-1)
             if return_error_hidden_states:
-                return error_pred_loss, error_preds, error_states 
+                return error_pred_loss, error_preds, error_states
             return error_pred_loss, error_preds
-            
-        rl_loss = None
-        if rewards is not None: 
+
+        if rewards is not None:
             if self.clone_rl_head:
                 rl_logits = self.rl_head(sequence_output)
             else:
-                rl_logits = lm_logits 
-                
-            log_prob_fct = LogSoftmax(dim=-1) 
-            probs = log_prob_fct(rl_logits)[labels!=-100].unsqueeze(0)
-            rl_seqs = labels[labels!=-100].unsqueeze(0)             
-            rl_probs = torch.gather(probs, 2, rl_seqs[:, :, None]).squeeze(-1)
-            rl_rewards = rewards[labels!=-100].unsqueeze(0) 
-            rl_loss = -(rl_probs*rl_rewards).mean() 
+                rl_logits = lm_logits
 
-            return rl_loss     
-        
+            log_prob_fct = LogSoftmax(dim=-1)
+            probs = log_prob_fct(rl_logits)[labels != -100].unsqueeze(0)
+            rl_seqs = labels[labels != -100].unsqueeze(0)
+            rl_probs = torch.gather(probs, 2, rl_seqs[:, :, None]).squeeze(-1)
+            rl_rewards = rewards[labels != -100].unsqueeze(0)
+            rl_loss = -(rl_probs * rl_rewards).mean()
+
+            return rl_loss
+
         if not return_dict:
             output = (lm_logits,) + decoder_outputs[1:] + encoder_outputs
             return ((loss,) + output) if loss is not None else output
