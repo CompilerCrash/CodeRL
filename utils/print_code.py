@@ -1,10 +1,11 @@
 import json
 
 problem_id = 0  # change this line as needed
-code_path = f"outputs/codes/{problem_id}.json"
+code_path = f"../outputs/codes/{problem_id}.json"
 
 with open(code_path, 'r') as f:
-    data = json.load(f)[str(problem_id)]
+    data = json.load(f)
+    data = data[str(problem_id)]
     prompt = data['prompt']
     codes = data['code']
 
