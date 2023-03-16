@@ -5,14 +5,24 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 
+# Reads:
+# ${test_path}/????/{solutions.json, gen_solutions.json}
+# Writes:
+# ${test_path}/????/{solutions_critic_scores.pkl, gen_solutions_critic_scores.pkl}
+
 critic_path=models/codet5_finetuned_critic_binary/
 tokenizer_path=models/codet5_tokenizer/
-test_path=data/APPS/train/ #test.json
+test_path=data/APPS/train/
 
-output_path=data/APPS/train/
+start=0
+end=1
+
+output_path=$test_path # variable is only set to avoid an error; critic scores are always saved next to the input data
 
 CUDA_VISIBLE_DEVICES=0 python generate.py \
-  --model_path ${critic_path} \
-  --test_path ${test_path} \
-  --output_path ${output_path} \
+  --model_path $critic_path \
+  --tokenizer_path $tokenizer_path \
+  --test_path $test_path \
+  --output_path $output_path \
+  -s $start -e $end \
   --critic_scores --gt_solutions --binary_prediction

@@ -5,14 +5,19 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 
+# Reads:
+# ${test_path}/????/{input_output.json, question.txt, starter_code.py}
+# Writes:
+# ${output_path}/????.json
+
 model_path=models/codet5_finetuned_codeRL/
 tokenizer_path=models/codet5_tokenizer/
 test_path=data/APPS/test/
 
 start=0
 end=1
-num_seqs_per_iter=10
-num_seqs=10
+num_seqs_per_iter=5
+num_seqs=5
 temp=0.6
 
 output_path=outputs/codes/
