@@ -42,6 +42,7 @@ def eval_and_save_problems(args):
 
     codes_loc = args.code_path + '/{}.json'.format(real_index)
     if not os.path.isfile(codes_loc):
+        print(f"{codes_loc} does not exist")
         exit()
     with open(codes_loc, "r") as file:
         gen_codes = json.load(file)[str(real_index)]['code']
@@ -50,9 +51,11 @@ def eval_and_save_problems(args):
     tests = json.load(open(test_file, 'r'))
     nb_tests = len(tests['inputs'])
     if args.max_tests != -1 and nb_tests > args.max_tests:
+        print(f"{test_file} contains more tests than --max_tests")
         exit()
 
     if os.path.isfile(args.output_path + '/{}.pkl'.format(real_index)):
+        print(f"{args.output_path + '/{}.pkl'.format(real_index)} already exists")
         exit()
 
     print("Saving to {}".format(args.output_path + '/{}.pkl'.format(real_index)))

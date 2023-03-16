@@ -169,6 +169,7 @@ def run_test(prob_path: str = None, problem_list: List[str] = None, prob_index: 
                 which_type = CODE_TYPE.call_based  # Call-based
                 method_name = in_outs["fn_name"]
     elif not example_tests:
+        print(f"{os.path.join(root, 'input_output.json')} does not exist and --example_tests is 0")
         return [], [], [], None
     elif example_tests:
         which_type = CODE_TYPE.standard_input  # assuming this method type 
@@ -179,8 +180,10 @@ def run_test(prob_path: str = None, problem_list: List[str] = None, prob_index: 
             with open(os.path.join(root, "example_input_output.json")) as f:
                 in_outs = json.load(f)
                 if in_outs is None:
+                    print(f"{os.path.join(root, 'example_input_output.json')} is empty")
                     return [], [], [], None
         else:
+            print(f"{os.path.join(root, 'example_input_output.json')} does not exist")
             return [], [], [], None
 
     if debug:
@@ -189,6 +192,7 @@ def run_test(prob_path: str = None, problem_list: List[str] = None, prob_index: 
     # else:
     #    continue
     if test is None:
+        print("Code to test is None")
         return [], [], [], None
     elif test is not None:
         results = []
@@ -481,7 +485,7 @@ def run_test(prob_path: str = None, problem_list: List[str] = None, prob_index: 
                     output_float = [float(e) for e in output]
                     gt_float = [float(e) for e in in_outs['outputs'][index]]
                     tmp_result = tmp_result or (
-                                (len(output_float) == len(gt_float)) and np.allclose(output_float, gt_float))
+                            (len(output_float) == len(gt_float)) and np.allclose(output_float, gt_float))
                 except Exception as e:
                     pass
                 try:
@@ -489,7 +493,7 @@ def run_test(prob_path: str = None, problem_list: List[str] = None, prob_index: 
                         output_float = [float(e) for e in output[0]]
                         gt_float = [float(e) for e in in_outs['outputs'][index][0]]
                         tmp_result = tmp_result or (
-                                    (len(output_float) == len(gt_float)) and np.allclose(output_float, gt_float))
+                                (len(output_float) == len(gt_float)) and np.allclose(output_float, gt_float))
                 except Exception as e:
                     pass
 
