@@ -160,14 +160,16 @@ cython_debug/
 .idea/
 
 # Data
-data/APPS/test/
-data/APPS/train/
+data/APPS/test/*
+data/APPS/train/*
+!data/APPS/test/*/example_input_output.json
 !data/APPS/train/0001/
 !data/APPS/train/0111/
+!data/APPS/train/2287/
 !data/APPS/train/2404/
 !data/APPS/train/4184/
 
 # Models
-pytorch_model.bin
-models/codet5_tokenizer/
+models/*/pytorch_model.bin
+models/codet5_tokenizer/*
 !models/codet5_tokenizer/.gitkeep
