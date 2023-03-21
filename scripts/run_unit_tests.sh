@@ -6,8 +6,10 @@
 #
 
 # Reads:
-# ${test_path}/????/{input_output.json, example_input_output.json}
+# ${test_path}/????/input_output.json
 # ${code_path}/????.json
+# Conditionally reads (depending on --example_tests):
+# ${test_path}/????/example_input_output.json
 # Writes:
 # ${output_path}/????.pkl
 

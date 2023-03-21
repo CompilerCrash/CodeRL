@@ -6,7 +6,9 @@
 #
 
 # Reads:
-# ${test_path}/????/{input_output.json, question.txt, starter_code.py}
+# ${test_path}/????/question.txt
+# Optionally reads:
+# ${test_path}/????/{starter_code.py, input_output.json}
 # Writes:
 # ${output_path}/????.json
 
