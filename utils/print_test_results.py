@@ -1,8 +1,21 @@
+import argparse
+import os
 import pickle
 
-problem_id = 0  # change this line as needed
-test_result_path = f"../outputs/test_results/{problem_id}.pkl"
-print_codes = False
+# Make sure cwd is project root
+os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument("-i", "--problem_id", default=0, type=int)
+parser.add_argument("-p", "--test_result_path", default="outputs/test_results/", type=str)
+parser.add_argument('--print_codes', action='store_true')
+
+args = parser.parse_args()
+
+problem_id = args.problem_id
+test_result_path = os.path.join(args.test_result_path, f"{problem_id}.pkl")
+print_codes = args.print_codes
 
 result_map = {-2: "compile error", -1: "runtime error", False: "failed tests", True: "passed tests"}
 

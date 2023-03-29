@@ -1,7 +1,19 @@
+import argparse
 import json
+import os
 
-problem_id = 0  # change this line as needed
-code_path = f"../outputs/codes/{problem_id}.json"
+# Make sure cwd is project root
+os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument("-i", "--problem_id", default=0, type=int)
+parser.add_argument("-p", "--code_path", default="outputs/codes/", type=str)
+
+args = parser.parse_args()
+
+problem_id = args.problem_id
+code_path = os.path.join(args.code_path, f"{problem_id}.json")
 
 with open(code_path, 'r') as f:
     data = json.load(f)
