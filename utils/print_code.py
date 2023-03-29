@@ -17,13 +17,14 @@ code_path = os.path.join(args.code_path, f"{problem_id}.json")
 
 with open(code_path, 'r') as f:
     data = json.load(f)
-    data = data[str(problem_id)]
-    prompt = data['prompt']
-    codes = data['code']
 
-    print("###  Prompt  ###")
-    print(prompt)
+data = data[str(problem_id)]
+prompt = data['prompt']
+codes = data['code']
 
-    for (index, code) in enumerate(codes):
-        print(f"###  Sample {index + 1}  ###\n")
-        print(code)
+print("###  Prompt  ###")
+print(prompt)
+
+for (index, code) in enumerate(codes):
+    print(f"###  Sample {index + 1}  ###\n")
+    print(code)
