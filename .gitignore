@@ -161,8 +161,8 @@ cython_debug/
 
 # Data
 data/APPS/test/*
-data/APPS/train/*
 !data/APPS/test/*/example_input_output.json
+data/APPS/train/*
 !data/APPS/train/0001/
 !data/APPS/train/0111/
 !data/APPS/train/2287/
@@ -173,3 +173,9 @@ data/APPS/train/*
 models/*/pytorch_model.bin
 models/codet5_tokenizer/*
 !models/codet5_tokenizer/.gitkeep
+
+# Outputs
+outputs/codes/*
+!outputs/codes/0.json
+outputs/test_results/*
+!outputs/test_results/0.pkl
