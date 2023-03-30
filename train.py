@@ -81,7 +81,6 @@ def run_training(args, train_data):
 
         deepspeed=args.deepspeed,
         fp16=args.fp16,
-
     )
 
     if args.tuning_mode in ['critic', 'rl']:

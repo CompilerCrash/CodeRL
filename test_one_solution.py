@@ -25,7 +25,7 @@ def eval_and_save_problems(args):
     test_indices = []
     for problem_idx, problem in enumerate(problems):
         problem_id = int(problem.split('/')[-1])
-        code_file_path = args.code_path + '/{}.json'.format(problem_id)
+        code_file_path = os.path.join(args.code_path, '{}.json'.format(problem_id))
         if os.path.exists(code_file_path):
             test_indices.append(problem_idx)
 
@@ -40,7 +40,7 @@ def eval_and_save_problems(args):
     if args.example_tests:
         print("Using example tests")
 
-    codes_loc = args.code_path + '/{}.json'.format(real_index)
+    codes_loc = os.path.join(args.code_path, '{}.json'.format(real_index))
     if not os.path.isfile(codes_loc):
         print(f"{codes_loc} does not exist")
         exit()
@@ -54,11 +54,12 @@ def eval_and_save_problems(args):
         print(f"{test_file} contains more tests than --max_tests")
         exit()
 
-    if os.path.isfile(args.output_path + '/{}.pkl'.format(real_index)):
-        print(f"{args.output_path + '/{}.pkl'.format(real_index)} already exists")
+    outputs_loc = os.path.join(args.output_path, '{}.pkl'.format(real_index))
+    if os.path.isfile(outputs_loc):
+        print(f"{outputs_loc} already exists")
         exit()
 
-    print("Saving to {}".format(args.output_path + '/{}.pkl'.format(real_index)))
+    print("Saving to {}".format(outputs_loc))
 
     all_results, all_errors, all_sols = [], [], []
 
@@ -91,7 +92,7 @@ def eval_and_save_problems(args):
             all_sols.append(curr_sol)
 
         save_results = {real_index: {'results': all_results, 'errors': all_errors, 'sols': all_sols}}
-        with open(args.output_path + '/{}.pkl'.format(real_index), "wb") as file:
+        with open(outputs_loc, "wb") as file:
             pkl.dump(save_results, file)
 
     '''
@@ -103,7 +104,7 @@ def eval_and_save_problems(args):
     '''
 
     save_results = {real_index: {'results': all_results, 'errors': all_errors, 'sols': all_sols}}
-    pkl.dump(save_results, open(args.output_path + '/{}.pkl'.format(real_index), "wb"))
+    pkl.dump(save_results, open(outputs_loc, "wb"))
 
 
 def main(args):

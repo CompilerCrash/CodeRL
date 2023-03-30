@@ -15,7 +15,7 @@
 
 code_path=outputs/codes/
 output_path=outputs/test_results/
-test_path=data/APPS/test/
+test_path=data/APPS/train/
 
 example_tests=0 # 0: run hidden unit tests; 1: run example unit tests
 start=0

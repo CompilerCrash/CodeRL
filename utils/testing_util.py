@@ -293,17 +293,17 @@ def run_test(prob_path: str = None, problem_list: List[str] = None, prob_index: 
                 if isinstance(inputs[0], dict):
                     inputs = [{int(k): v for k, v in inputs[0].items()}]
             except:
-                True
+                pass
             try:
                 if isinstance(in_outs["outputs"][index], dict):
                     in_outs["outputs"][index] = [{int(k): v for k, v in in_outs["outputs"][index].items()}]
             except:
-                True
+                pass
             try:
                 if isinstance(in_outs["outputs"][index][0], dict):
                     in_outs["outputs"][index] = [{int(k): v for k, v in in_outs["outputs"][index][0].items()}]
             except:
-                True
+                pass
 
             if debug:
                 print(
@@ -329,7 +329,7 @@ def run_test(prob_path: str = None, problem_list: List[str] = None, prob_index: 
                         if isinstance(output[0], tuple):
                             tmp_result = tmp_result or ([list(x) for x in output] == in_outs["outputs"][index][0])
                     except:
-                        True
+                        pass
                     results.append(tmp_result)
                     errors.append(None)
                     outputs.append(output)

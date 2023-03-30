@@ -14,7 +14,7 @@
 
 model_path=models/codet5_finetuned_codeRL/
 tokenizer_path=models/codet5_tokenizer/
-test_path=data/APPS/test/
+test_path=data/APPS/train/
 
 start=0
 end=1
