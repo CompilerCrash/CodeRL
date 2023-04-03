@@ -7,10 +7,10 @@
 
 # Reads:
 # ${test_path}/????/question.txt
-# Optionally reads:
-# ${test_path}/????/{starter_code.py, input_output.json}
 # Conditionally reads (depending on --gt_solutions):
 # ${test_path}/????/{solutions.json, gen_solutions.json}
+# Optionally reads:
+# ${test_path}/????/{starter_code.py, input_output.json}
 # Conditionally writes (depending on --gt_solutions):
 # ${test_path}/????/{solutions_critic_scores.pkl, gen_solutions_critic_scores.pkl}
 

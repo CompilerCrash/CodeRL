@@ -5,6 +5,17 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 
+# Reads:
+# ${train-path}/????/{question.txt, solutions.json, gen_solutions_critic_scores.pkl}
+# Conditionally reads (depending on --relative_returns):
+# ${train-path}/????/baseline_solutions.json
+# Optionally reads:
+# ${train-path}/????/starter_code.py
+# Writes:
+# ${save_dir}/args.json
+# ${save_dir}/final_checkpoint/*
+# ${save_dir}/*/*
+
 # Run code in debugging mode (without deepspeed)
 python \
   train.py \
