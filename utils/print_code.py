@@ -1,9 +1,12 @@
 import argparse
 import json
 import os
+import sys
 
 # Make sure cwd is project root
-os.chdir(os.path.join(os.path.dirname(__file__), os.pardir))
+root_path = os.path.normpath(os.path.join(os.path.dirname(__file__), os.pardir))
+os.chdir(root_path)
+sys.path.extend([root_path])
 
 parser = argparse.ArgumentParser()
 
