@@ -5,17 +5,15 @@
 # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
 #
 
+import glob
 import json
-import numpy as np
 import os
 import os.path
-import pprint
-import glob
-from tqdm import tqdm
-import pdb
-import traceback
 import pickle as pkl
-from typing import List
+import traceback
+
+import numpy as np
+from tqdm import tqdm
 
 from utils.testing_util import run_test
 

@@ -3,12 +3,13 @@ Reindent files.
 """
 
 from __future__ import print_function
-import sys
-import getopt
+
 import codecs
-import tempfile
-import shutil
+import getopt
 import os
+import shutil
+import sys
+import tempfile
 
 
 def _find_indentation(line, config):

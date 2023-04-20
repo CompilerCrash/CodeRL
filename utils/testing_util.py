@@ -6,33 +6,25 @@
 #
 
 import argparse
+import faulthandler
+import gc
 import json
 import os
-import sys
-import io
-import faulthandler
-
-# used for debugging to time steps
-from datetime import datetime
-
 # to run the solution files we're using a timing based approach
 import signal
-
-import numpy as np
+import sys
+# used for debugging to time steps
+from datetime import datetime
+from enum import Enum
 # for capturing the stdout
 from io import StringIO
-from typing import get_type_hints
-from typing import List, Tuple
+from typing import List
 # used for testing the code that reads from input
 from unittest.mock import patch, mock_open
 
+import numpy as np
 from pyext import RuntimeModule
-import gc
-from enum import Enum
-import traceback
 from tqdm import tqdm
-
-import pdb
 
 
 class CODE_TYPE(Enum):

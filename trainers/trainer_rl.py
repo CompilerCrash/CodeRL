@@ -22,7 +22,6 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Un
 
 from tqdm.auto import tqdm
 
-import pdb
 
 # Integrations must be imported before ML frameworks:
 from transformers.integrations import (  # isort: split
@@ -121,6 +120,7 @@ from transformers.trainer_utils import (
 from transformers.training_args import ParallelMode, TrainingArguments
 from transformers.utils import logging
 
+
 _is_torch_generator_available = False
 _is_native_amp_available = False
 
@@ -167,6 +167,7 @@ if is_sagemaker_mp_enabled():
     import smdistributed.modelparallel.torch as smp
 
     from .trainer_pt_utils import smp_forward_backward, smp_forward_only, smp_gather, smp_nested_concat
+
 
 if TYPE_CHECKING:
     import optuna
