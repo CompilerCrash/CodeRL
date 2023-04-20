@@ -64,7 +64,7 @@ def get_error_type(result, binary=False):
     elif result is True:
         return 3
     else:
-        raise NotImplementedError()
+        raise NotImplementedError(f"{result=}")
 
 
 def get_reward_from_error_type(error_type):
@@ -81,4 +81,4 @@ def get_reward_from_error_type(error_type):
         # Passed all unit tests
         return 1
     else:
-        raise NotImplementedError()
+        raise NotImplementedError(f"{error_type=}")

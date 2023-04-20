@@ -108,7 +108,7 @@ def eval_and_save_problems(args):
 
 
 def main(args):
-    argsdict = vars(args)
+    # argsdict = vars(args)
     eval_and_save_problems(args)
 
 

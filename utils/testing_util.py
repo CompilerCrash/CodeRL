@@ -156,8 +156,9 @@ def run_test(prob_path: str = None, problem_list: List[str] = None, prob_index: 
     elif problem_list is not None:
         root = problem_list[prob_index]
 
-    if os.path.exists(os.path.join(root, "input_output.json")):
-        with open(os.path.join(root, "input_output.json")) as f:
+    io_path = os.path.join(root, "input_output.json")
+    if os.path.exists(io_path):
+        with open(io_path) as f:
             in_outs = json.load(f)
             if debug:
                 print(f"test cases json = {in_outs['inputs']} {in_outs['outputs']}")
@@ -169,21 +170,22 @@ def run_test(prob_path: str = None, problem_list: List[str] = None, prob_index: 
                 which_type = CODE_TYPE.call_based  # Call-based
                 method_name = in_outs["fn_name"]
     elif not example_tests:
-        print(f"{os.path.join(root, 'input_output.json')} does not exist and --example_tests is 0")
+        print(f"{io_path} does not exist and --example_tests is 0")
         return [], [], [], None
     elif example_tests:
         which_type = CODE_TYPE.standard_input  # assuming this method type 
         method_name = None
 
     if example_tests:
-        if os.path.exists(os.path.join(root, "example_input_output.json")):
-            with open(os.path.join(root, "example_input_output.json")) as f:
+        example_io_path = os.path.join(root, "example_input_output.json")
+        if os.path.exists(example_io_path):
+            with open(example_io_path) as f:
                 in_outs = json.load(f)
                 if in_outs is None:
-                    print(f"{os.path.join(root, 'example_input_output.json')} is empty")
+                    print(f"{example_io_path} is empty")
                     return [], [], [], None
         else:
-            print(f"{os.path.join(root, 'example_input_output.json')} does not exist")
+            print(f"{example_io_path} does not exist")
             return [], [], [], None
 
     if debug:
