@@ -136,7 +136,8 @@ class APPSBaseDataset(torch.utils.data.Dataset):
                 answer_type = "\nUse Standard Input format\n"
                 starter_code = ""
 
-            sols_str_list = json.load(open(sols_fname, 'r'))
+            with open(sols_fname, 'r') as f:
+                sols_str_list = json.load(f)
             gt_samples = self.load_gt_samples(sols_str_list, answer_type, starter_code, question_str)
             all_samples += gt_samples
 
@@ -144,7 +145,8 @@ class APPSBaseDataset(torch.utils.data.Dataset):
             if self.tuning_mode in ['critic']:
                 for fname in gen_sols_fname:
                     if os.path.exists(fname):
-                        gen_sols = json.load(open(fname, 'r'))
+                        with open(fname, 'r') as f:
+                            gen_sols = json.load(f)
                         samples, info = self.load_gen_samples(gen_sols, answer_type, starter_code, question_str)
                         self.update_error_stat(info)
                         gen_samples += samples
@@ -158,14 +160,16 @@ class APPSBaseDataset(torch.utils.data.Dataset):
             elif self.tuning_mode in ['rl']:
 
                 if self.relative_returns:
-                    baseline_sample = json.load(open(baseline_fname, 'r'))
+                    with open(baseline_fname, 'r') as f:
+                        baseline_sample = json.load(f)
                     baseline_error_type = self.get_baseline_error_type(baseline_sample)
                 else:
                     baseline_error_type = -1
 
                 for fname in gen_sols_fname:
                     if os.path.exists(fname):
-                        gen_sols = pkl.load(open(fname, 'rb'))
+                        with open(fname, 'rb') as f:
+                            gen_sols = pkl.load(f)
                         samples, info = self.load_rl_samples(gen_sols, baseline_error_type)
                         self.update_error_stat_rl(info)
                         gen_samples += samples

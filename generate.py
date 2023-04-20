@@ -61,7 +61,8 @@ def generate_critic_inputs(args, test_case_path, prompt_path, solutions_path, to
     in_tokens[:len(q_tokens)] = q_tokens
     in_tokens = in_tokens[:args.source_len]
 
-    solutions = json.load(open(solutions_path, 'r'))
+    with open(solutions_path, 'r') as f:
+        solutions = json.load(f)
 
     all_texts = []
     gt_errors = []
@@ -183,7 +184,8 @@ def main(args):
                 else:
                     scores_loc = os.path.join(prob_path, "gen_solutions_critic_scores.pkl")
 
-                pkl.dump(saved_critic_scores, open(scores_loc, 'wb'))
+                with open(scores_loc, 'wb') as f:
+                    pkl.dump(saved_critic_scores, f)
 
             else:
                 input_ids = torch.LongTensor(tokenizer.encode(input_text,

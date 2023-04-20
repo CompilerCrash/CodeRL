@@ -132,7 +132,8 @@ def main(args):
     train_data = get_dataset(args)
 
     # Save args to file
-    json.dump(argsdict, open(os.path.join(args.save_dir, "args.json"), 'w'))
+    with open(os.path.join(args.save_dir, "args.json"), 'w') as file:
+        json.dump(argsdict, file)
 
     # Load and train model; save model checkpoints 
     run_training(args, train_data)

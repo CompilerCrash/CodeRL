@@ -46,7 +46,8 @@ def eval_and_save_problems(args):
         gen_codes = json.load(file)[str(real_index)]['code']
 
     test_file = os.path.join(problem, "input_output.json")
-    tests = json.load(open(test_file, 'r'))
+    with open(test_file, 'r') as file:
+        tests = json.load(file)
     nb_tests = len(tests['inputs'])
     if args.max_tests != -1 and nb_tests > args.max_tests:
         print(f"{test_file} contains more tests than --max_tests")
@@ -102,7 +103,8 @@ def eval_and_save_problems(args):
     '''
 
     save_results = {real_index: {'results': all_results, 'errors': all_errors, 'sols': all_sols}}
-    pkl.dump(save_results, open(outputs_loc, "wb"))
+    with open(outputs_loc, "wb") as file:
+        pkl.dump(save_results, file)
 
 
 def main(args):
