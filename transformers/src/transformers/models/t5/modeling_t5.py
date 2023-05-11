@@ -1677,6 +1677,7 @@ class T5ForConditionalGeneration(T5PreTrainedModel):
                 return error_pred_loss, error_preds, error_states
             return error_pred_loss, error_preds
 
+        rl_loss = None
         if rewards is not None:
             if self.clone_rl_head:
                 rl_logits = self.rl_head(sequence_output)

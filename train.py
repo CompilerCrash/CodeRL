@@ -35,6 +35,9 @@ def run_training(args, train_data):
             lm_head_params = model.lm_head.weight.detach().numpy()
             model.rl_head.weight = torch.nn.Parameter(torch.tensor(lm_head_params))
 
+    else:
+        raise NotImplementedError(f"{args.model=}")
+
     print('Finished loading model {}'.format(args.model))
 
     start_iteration = 0
