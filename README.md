@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="images/logo.jpg" width="50%">
+<img src="images/logo.jpg" width="50%" />
 </p>
 
 ## CodeRL: Mastering Code Generation through Pretrained Models and Deep Reinforcement Learning <a name="corl"></a>
@@ -24,7 +24,7 @@ Authors:
 	* [x] CodeT5-large-ntp-py
 	* [x] CodeRL+CodeT5 
 	* [x] Critic models 
-* [ ] [Processes](#processes)  
+* [ ] [Processes](#processes)
 	* [x] [Generating Programs](#generating-programs)
 	* [x] [Running Unit Tests](#running-unit-tests)
 	* [x] [Evaluating Programs](#evaluating-programs)
@@ -37,18 +37,18 @@ Authors:
 * [x] [Citation](#citation)
 * [x] [License](#license) 
 
-## CodeRL Overview  
+## CodeRL Overview
 
 
- <p align="center">
+<p align="center">
 <img src="images/coderl_overview.png" width="100%" />
- <br>
+<br>
 <b>An example program synthesis task (Right)</b>: Each task includes a problem specification in natural language, which often contains example input and output pairs. The expected output is a program that is checked for functional correctness against some unit tests. 
 <b>A high-level overview of our CodeRL framework for program synthesis (Left)</b>: Our CodeRL framework treats pretrained language model (LM) as a stochastic policy, token predictions as actions, and rewards can be estimated based on unit test results of output programs
 </p>
 
 * During training, we treat the code-generating language models as an actor network, and introduce a critic network that is trained to predict the functional correctness of generated programs and provide dense feedback signals to the actor. 
-* During inference, we introduce a new generation procedure with a critical sampling strategy that allows a model to automatically regenerate programs based on feedback from example unit tests and critic scores. 
+* During inference, we introduce a new generation procedure with a critic sampling strategy that allows a model to automatically regenerate programs based on feedback from example unit tests and critic scores. 
 
 
 <!---
@@ -66,7 +66,7 @@ programs are refined and repaired based on their results on example unit tests o
 -->
 
 
-## Installation  
+## Installation
 
 The code requires some dependencies as specified in `requirements.txt`. Please follow the relevant libraries to install or run: 
 
@@ -82,7 +82,7 @@ pip install -e .
 
 ## Datasets 
 
-For pretraining, apart from the [CodeSearchNet (CSN)](https://arxiv.org/abs/1909.09436), we use the [Python Github Code Dataset (GCPY)](https://huggingface.co/datasets/lvwerra/github-code). 
+For pretraining, apart from the [CodeSearchNet (CSN)](https://arxiv.org/abs/1909.09436), we use the [Python GitHub Code Dataset (GCPY)](https://huggingface.co/datasets/lvwerra/github-code). 
 We have compiled public, non-personal data from GitHub consisting of permissively licensed Python code (e.g. “mit”, “apache-2”, “bsd-3-clause”, “bsd-2- 126 clause”, “cc0-1.0”, “unlicense”, “isc”). Please see the paper for more details on pretraining data preprocessing and pretraining. 
 
 
@@ -162,7 +162,7 @@ We created `scripts/run_unit_tests.sh` to run unit tests on generated programs o
 | `threads`        | Depending on the capacity of the computation resource to run unit tests, we can run unit tests on multiple test samples over multiple threads to speed up the execution time | 30                                                  |
 
 
-Running the script will output test results for each program. For each test sample, the results are saved into a `pickle` file, including data fields `results` (list of test outcomes, one of -2 = compile error, -1 = runtime error, False = failed test case, True = passed test case), `errors` (real compile error trace with details like error type and line numbers),  and `sols` (corresponding programs being evaluated).
+Running the script will output test results for each program. For each test sample, the results are saved into a `pickle` file, including data fields `results` (list of test outcomes, one of -2 = compile error, -1 = runtime error, False = failed test case, True = passed test case), `errors` (real compile error trace with details like error type and line numbers), and `sols` (corresponding programs being evaluated).
 
 Compared to the original implementation from APPS, we adopt one trick which will exit the unit testing loop if a program does not pass any test case. This will speed up the testing process while the final passing rate measures are not affected. Refer to the `run_test` function in `utils/testing_utils.py` for more details. 
 
@@ -175,7 +175,7 @@ To compute the pass@k metrics, rather than using the APPS evaluation metrics, we
 
 We can train a critic model as a classifier that predicts the test outcomes of generated samples. For each training sample, we can follow the prior processes ([generating programs](#generating-programs) and [running unit tests](#running-unit-tests)) to obtain synthetic samples and their annotations of unit test outcomes. On average, we generate 20 programs per training sample (we provided some example generated programs in `data/APPS/train/`).
 
-Once the programs are tested, we can used their test outcomes as annotations to train a critic model initialized from a LM pretrained on source code data (we used CodeT5-based in this case). 
+Once the programs are tested, we can use their test outcomes as annotations to train a critic model initialized from a LM pretrained on source code data (we used CodeT5-base in this case). 
 
 We created `scripts/train_critic.sh` and `scripts/train_critic_deepspeed.sh` to train a critic using generated programs. You can directly run this file by configuring the following parameters:
 
@@ -198,7 +198,7 @@ Running the script will train a critic model as a classifier that receives input
 
 ### Generating Critic Scores
 
-We created `scripts/generate_critic_scores.sh` to generate critic scores for synthetic programs. We use the same parameters as defined in [the generating program process](#generating-programs) with the following additional parameters:   
+We created `scripts/generate_critic_scores.sh` to generate critic scores for synthetic programs. We use the same parameters as defined in [the generating program process](#generating-programs) with the following additional parameters:
 
 |   **Parameters**  |                                              **Description**                                             |       **Example Values**       |
 |:-----------------:|:--------------------------------------------------------------------------------------------------------:|:------------------------------:|
@@ -213,7 +213,7 @@ For each data sample, the prediction is saved into a `pkl` (pickle) file, includ
 
 ### Finetuning with Ground-truth Programs
 
-We can finetune any pretraind language model as a program synthesis model that can generate code from problem description in natural language. In our approach, this stage of finetuning is a warmup stage using the ground-truth annotations (from APPS) before a further finetuning stage on synthetic/generated programs. 
+We can finetune any pretrained language model as a program synthesis model that can generate code from problem description in natural language. In our approach, this stage of finetuning is a warmup stage using the ground-truth annotations (from APPS) before a further finetuning stage on synthetic/generated programs. 
  
 We created `scripts/train_actor.sh` and `scripts/train_actor_deepspeed.sh` which include the parameters as defined above in the [critic training process](#training-critic). 
 
@@ -228,12 +228,12 @@ We use the parameters as defined above in the [critic training process](#trainin
 |   **Parameters**  |                                              **Description**                                             |       **Example Values**       |
 |:-----------------:|:--------------------------------------------------------------------------------------------------------:|:------------------------------:|
 | `model_path`        | Path to a finetuned model checkpoint e.g. from warm-up training                                                                    | models/codet5_finetuned_codeRL |
-| `relative_returns`    | Enable this to consider a baseline to compute relative return estimates rather than absolute return restimates in the RL loss| N/A      |
+| `relative_returns`    | Enable this to consider a baseline to compute relative return estimates rather than absolute return estimates in the RL loss| N/A      |
 
 Other parameters are defined in the file `utils/train_configs.py`.
 
 
-Running the script will load a finetuned CodeT5-large model and continue to train it with both generated programs as well as ground-truth programs in alternative training steps. 
+Running the script will load a finetuned CodeT5-large model and continue to train it with both generated programs and ground-truth programs in alternative training steps. 
 The model checkpoints are saved in a folder under `exps/`. 
 
 ### Generating Programs with Critic Sampling 
@@ -268,4 +268,3 @@ If you find the paper or the source code useful to your projects, please cite th
 The code is released under BSD 3-Clause - see `LICENSE.txt` for details.
 
 This code is developed from other open source projects: including [APPS](https://github.com/hendrycks/apps/), [HumanEval](https://github.com/openai/human-eval), and [transformers](https://github.com/huggingface/transformers). We thank the original contributors of these works for open-sourcing their valuable source codes. 
-
